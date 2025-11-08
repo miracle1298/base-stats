@@ -22,6 +22,7 @@ function AirdropChecker() {
   const [error, setError] = useState('');
   const [airdropData, setAirdropData] = useState<AirdropData | null>(null);
   const [userData, setUserData] = useState<any>(null);
+  const [searchInput, setSearchInput] = useState('');
 
   // Fetch user data from Farcaster context when component mounts
   useEffect(() => {
@@ -186,6 +187,96 @@ function AirdropChecker() {
     }
   };
 
+  const handleSearch = async () => {
+    if (!searchInput.trim()) {
+      setError('Please enter a Farcaster username, FID, or wallet address');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError('');
+      
+      const cleanInput = searchInput.toLowerCase().replace('@', '').trim();
+      const isFID = /^\d+$/.test(cleanInput);
+      const isAddress = /^0x[a-fA-F0-9]{40}$/.test(cleanInput);
+      
+      let user = null;
+      let verifiedAddress = '';
+      
+      if (isAddress) {
+        // Handle wallet address search
+        verifiedAddress = cleanInput;
+        
+        // Fetch blockchain data using Alchemy SDK
+        try {
+          const alchemy = new Alchemy({
+            apiKey: import.meta.env.VITE_ALCHEMY_API_KEY || 'demo',
+            network: Network.BASE_MAINNET
+          });
+          
+          const balances = await alchemy.core.getTokenBalances(verifiedAddress);
+          console.log('Alchemy balances:', balances);
+        } catch (alchemyErr) {
+          console.log('Alchemy data fetch failed:', alchemyErr);
+        }
+        
+        // Create mock user for address
+        user = {
+          username: 'wallet_user',
+          fid: '0',
+          custody: verifiedAddress,
+          verifications: [verifiedAddress]
+        };
+      } else {
+        // Handle Farcaster username/FID search
+        const apiKey = import.meta.env.VITE_NEYNAR_API_KEY || 'NEYNAR_API_DOCS';
+        let apiUrl = '';
+        
+        if (isFID) {
+          apiUrl = `https://api.neynar.com/v2/farcaster/user/bulk?fids=${cleanInput}`;
+        } else {
+          apiUrl = `https://api.neynar.com/v2/farcaster/user/by_username?username=${cleanInput}`;
+        }
+        
+        const response = await fetch(apiUrl, {
+          headers: {
+            'accept': 'application/json',
+            'x-api-key': apiKey
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (isFID && data.users && data.users.length > 0) {
+            user = data.users[0];
+          } else if (!isFID && data.user) {
+            user = data.user;
+          }
+        } else {
+          throw new Error('User not found');
+        }
+      }
+      
+      if (user) {
+        await fetchAirdropData(user);
+      } else {
+        throw new Error('User not found');
+      }
+    } catch (err: any) {
+      console.error('Error searching user:', err);
+      const errorMessage = err.message || 'User not found. Please check the username, FID, or wallet address.';
+      setError(errorMessage);
+      setIsLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   const handleShare = () => {
     if (!airdropData) return;
 
@@ -234,10 +325,31 @@ function AirdropChecker() {
           <p>Check Base & Farcaster airdrop eligibility</p>
         </div>
 
+        {/* Search Box */}
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Enter Farcaster username, FID, or wallet address"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="search-input"
+          />
+          <motion.button
+            className="search-btn"
+            onClick={handleSearch}
+            disabled={isLoading}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {isLoading ? '⏳ Searching...' : '🔍 Search'}
+          </motion.button>
+        </div>
+
         {isLoading && (
           <div className="loading-container">
             <div className="spinner"></div>
-            <p>Fetching your airdrop data...</p>
+            <p>Fetching airdrop data...</p>
           </div>
         )}
 
