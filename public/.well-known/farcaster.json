@@ -4,7 +4,7 @@
     "name": "Base Mock Airdrop",
     "iconUrl": "https://base-stats-three.vercel.app/icon.png",
     "homeUrl": "https://base-stats-three.vercel.app",
-    "splashImageUrl": "https://base-stats-three.vercel.app/icon.png",
+    "splashImageUrl": "https://base-stats-three.vercel.app/splash.png",
     "splashBackgroundColor": "#0A0B14",
     "subtitle": "Base & Farcaster Airdrops",
     "description": "Check your eligibility for Base and Farcaster airdrops. Get real-time analytics and share your results with the community.",

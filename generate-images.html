@@ -59,6 +59,10 @@
     <canvas id="iconCanvas" width="1024" height="1024"></canvas>
     <button onclick="downloadIcon()">📥 Download icon.png</button>
 
+    <h2>Splash Image (200x200px)</h2>
+    <canvas id="splashCanvas" width="200" height="200"></canvas>
+    <button onclick="downloadSplash()">📥 Download splash.png</button>
+
     <h2>OG Image (1200x630px)</h2>
     <canvas id="ogCanvas" width="1200" height="630"></canvas>
     <button onclick="downloadOG()">📥 Download og-image.png</button>
@@ -87,6 +91,23 @@
         iconCtx.fillText('BASE', 512, 800);
         iconCtx.font = 'bold 60px Arial';
         iconCtx.fillText('MOCK AIRDROP', 512, 880);
+
+        // Generate Splash Image (200x200px)
+        const splashCanvas = document.getElementById('splashCanvas');
+        const splashCtx = splashCanvas.getContext('2d');
+
+        // Gradient background
+        const splashGradient = splashCtx.createLinearGradient(0, 0, 200, 200);
+        splashGradient.addColorStop(0, '#0052FF');
+        splashGradient.addColorStop(1, '#8A63D2');
+        splashCtx.fillStyle = splashGradient;
+        splashCtx.fillRect(0, 0, 200, 200);
+
+        // Add emoji
+        splashCtx.font = 'bold 100px Arial';
+        splashCtx.textAlign = 'center';
+        splashCtx.textBaseline = 'middle';
+        splashCtx.fillText('🎁', 100, 100);
 
         // Generate OG Image
         const ogCanvas = document.getElementById('ogCanvas');
@@ -129,6 +150,13 @@
             const link = document.createElement('a');
             link.download = 'icon.png';
             link.href = iconCanvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadSplash() {
+            const link = document.createElement('a');
+            link.download = 'splash.png';
+            link.href = splashCanvas.toDataURL('image/png');
             link.click();
         }
 
