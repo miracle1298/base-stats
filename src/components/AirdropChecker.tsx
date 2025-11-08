@@ -172,10 +172,12 @@ function AirdropChecker() {
       shareText += `🟣 Farcaster: Not Eligible\n`;
     }
     
-    shareText += `\nCheck yours at base-stats-three.vercel.app!`;
+    shareText += `\nCheck yours! 👇`;
 
     const encodedText = encodeURIComponent(shareText);
-    const warpcastShareUrl = `https://warpcast.com/~/compose?text=${encodedText}`;
+    // Include the embeds parameter to make it open as a Mini App
+    const embedUrl = encodeURIComponent('https://base-stats-three.vercel.app');
+    const warpcastShareUrl = `https://warpcast.com/~/compose?text=${encodedText}&embeds[]=${embedUrl}`;
 
     try {
       sdk.actions.openUrl(warpcastShareUrl);
