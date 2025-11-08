@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { sdk } from '@farcaster/miniapp-sdk';
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { injected } from 'wagmi/connectors';
+import { Alchemy, Network } from 'alchemy-sdk';
 import './AirdropChecker.css';
 
 interface AirdropData {
@@ -22,9 +25,45 @@ function AirdropChecker() {
   const [error, setError] = useState('');
   const [airdropData, setAirdropData] = useState<AirdropData | null>(null);
   const [lastSearchTime, setLastSearchTime] = useState(0);
+  const [isAutoConnecting, setIsAutoConnecting] = useState(false);
+  
+  const { address, isConnected } = useAccount();
+  const { connect } = useConnect();
+  const { disconnect } = useDisconnect();
+
+  // Auto-connect on component mount
+  useEffect(() => {
+    const autoConnect = async () => {
+      try {
+        setIsAutoConnecting(true);
+        // Try to connect to injected wallet (Farcaster's connected wallet)
+        connect({ connector: injected() });
+      } catch (err) {
+        console.log('Auto-connect failed:', err);
+      } finally {
+        setIsAutoConnecting(false);
+      }
+    };
+
+    // Only auto-connect if not already connected
+    if (!isConnected) {
+      autoConnect();
+    }
+  }, [isConnected, connect]);
+
+  // Fetch user data when wallet is connected
+  useEffect(() => {
+    if (isConnected && address) {
+      // Auto-fetch data for connected user
+      handleSearch();
+    }
+  }, [isConnected, address]);
 
   const handleSearch = async () => {
-    if (!searchInput.trim()) {
+    // If no search input and we have a connected wallet, use the wallet address
+    const searchValue = searchInput.trim() || (isConnected && address ? address : '');
+    
+    if (!searchValue) {
       setError('Please enter a Farcaster username or wallet address');
       return;
     }
@@ -41,53 +80,106 @@ function AirdropChecker() {
     setAirdropData(null);
     setLastSearchTime(now);
 
-    const cleanInput = searchInput.toLowerCase().replace('@', '').trim();
+    const cleanInput = searchValue.toLowerCase().replace('@', '').trim();
     const isFID = /^\d+$/.test(cleanInput);
+    const isAddress = /^0x[a-fA-F0-9]{40}$/.test(cleanInput);
 
     try {
-      // Fetch user data from Neynar to check spam label
-      const apiKey = import.meta.env.VITE_NEYNAR_API_KEY || 'NEYNAR_API_DOCS';
-      const apiUrl = isFID 
-        ? `https://api.neynar.com/v2/farcaster/user/bulk?fids=${cleanInput}`
-        : `https://api.neynar.com/v2/farcaster/user/by_username?username=${cleanInput}`;
-
-      const response = await fetch(apiUrl, {
-        headers: {
-          'accept': 'application/json',
-          'x-api-key': apiKey
-        }
-      });
-
-      if (response.status === 429) {
-        throw new Error('Rate limit exceeded. Please wait a moment and try again.');
-      }
-
-      if (!response.ok) {
-        throw new Error('User not found');
-      }
-
-      const data = await response.json();
       let user = null;
+      let verifiedAddress = '';
       
-      if (isFID && data.users && data.users.length > 0) {
-        user = data.users[0];
-      } else if (!isFID && data.user) {
-        user = data.user;
+      // If we have a wallet address, fetch blockchain data using Alchemy
+      if (isAddress || (isConnected && address)) {
+        const targetAddress = isAddress ? cleanInput : (address || '');
+        
+        if (targetAddress) {
+          // Fetch blockchain data using Alchemy SDK
+          const alchemy = new Alchemy({
+            apiKey: import.meta.env.VITE_ALCHEMY_API_KEY || 'demo',
+            network: Network.BASE_MAINNET
+          });
+          
+          try {
+            // Get token balances and transaction history
+            const balances = await alchemy.core.getTokenBalances(targetAddress);
+            // Get transaction count for the address
+            const transactionCount = await alchemy.core.getTransactionCount(targetAddress);
+            
+            console.log('Alchemy data:', { balances, transactionCount });
+          } catch (alchemyErr) {
+            console.log('Alchemy data fetch failed:', alchemyErr);
+          }
+          
+          verifiedAddress = targetAddress;
+        }
       }
 
-      if (!user) {
-        throw new Error('User not found');
+      // Fetch user data from Neynar API
+      const apiKey = import.meta.env.VITE_NEYNAR_API_KEY || 'NEYNAR_API_DOCS';
+      let apiUrl = '';
+      
+      if (isFID) {
+        apiUrl = `https://api.neynar.com/v2/farcaster/user/bulk?fids=${cleanInput}`;
+      } else if (!isAddress && cleanInput) {
+        // For usernames, use the by_username endpoint
+        apiUrl = `https://api.neynar.com/v2/farcaster/user/by_username?username=${cleanInput}`;
+      } else if (isAddress) {
+        // For addresses, we'll need to find the associated FID
+        // This is a simplified approach - in a real app, you'd need to map address to FID
+        throw new Error('Address lookup not implemented in this demo');
+      } else {
+        throw new Error('Invalid input');
       }
 
-      // Log user data to check available fields
-      console.log('User data from Neynar:', user);
-      console.log('Active status:', user.active_status);
-      console.log('Power badge:', user.power_badge);
+      // Only fetch from Neynar if we're looking up a username or FID
+      if (!isAddress && cleanInput) {
+        const response = await fetch(apiUrl, {
+          headers: {
+            'accept': 'application/json',
+            'x-api-key': apiKey
+          }
+        });
 
-      // Get verified addresses
-      const verifiedAddress = user.verified_addresses?.eth_addresses?.[0] || 
-                             user.custody_address || 
-                             '0x' + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+        if (response.status === 429) {
+          throw new Error('Rate limit exceeded. Please wait a moment and try again.');
+        }
+
+        if (!response.ok) {
+          throw new Error('User not found');
+        }
+
+        const data = await response.json();
+        
+        if (isFID && data.users && data.users.length > 0) {
+          user = data.users[0];
+        } else if (!isFID && data.user) {
+          user = data.user;
+        }
+
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        // Log user data to check available fields
+        console.log('User data from Neynar:', user);
+        console.log('Active status:', user.active_status);
+        console.log('Power badge:', user.power_badge);
+
+        // Get verified addresses
+        verifiedAddress = user.verified_addresses?.eth_addresses?.[0] || 
+                         user.custody_address || 
+                         '0x' + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+      } else if (isAddress) {
+        // For address lookups, create a mock user
+        user = {
+          username: 'wallet_user',
+          fid: '0',
+          follower_count: 0,
+          following_count: 0,
+          power_badge: false,
+          active_status: 'active'
+        };
+      }
 
       // Enhanced spam detection using multiple indicators
       let isSpam = false;
@@ -114,15 +206,15 @@ function AirdropChecker() {
       console.log('Spam detection result:', { isSpam, spamLabel });
 
       // Generate consistent amounts based on FID (deterministic, not random)
-      const seed = parseInt(user.fid.toString());
+      const seed = parseInt(user.fid?.toString() || '0');
       const baseEligible = (seed % 10) > 3; // 60% eligible
       const farcasterEligible = (seed % 10) > 2; // 70% eligible
       const baseAmount = baseEligible ? ((seed * 7) % 5000) + 500 : 0;
       const farcasterAmount = farcasterEligible ? ((seed * 13) % 10000) + 1000 : 0;
 
       const mockData: AirdropData = {
-        username: '@' + user.username,
-        fid: user.fid.toString(),
+        username: user.username ? '@' + user.username : 'Wallet User',
+        fid: user.fid?.toString() || '0',
         address: verifiedAddress,
         baseEligible: baseEligible,
         farcasterEligible: farcasterEligible,
@@ -195,6 +287,26 @@ function AirdropChecker() {
         <div className="checker-header">
           <h2>🎁 Airdrop Analytics</h2>
           <p>Check Base & Farcaster airdrop eligibility</p>
+        </div>
+
+        {/* Wallet Connection Status */}
+        <div className="wallet-status">
+          {isAutoConnecting ? (
+            <div className="connection-status">
+              <span className="status-indicator connecting"></span>
+              Connecting to Farcaster wallet...
+            </div>
+          ) : isConnected ? (
+            <div className="connection-status">
+              <span className="status-indicator connected"></span>
+              Wallet Connected: {address?.slice(0, 6)}...{address?.slice(-4)}
+            </div>
+          ) : (
+            <div className="connection-status">
+              <span className="status-indicator disconnected"></span>
+              Wallet Not Connected
+            </div>
+          )}
         </div>
 
         <div className="search-box">

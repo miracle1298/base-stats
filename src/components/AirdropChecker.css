@@ -33,6 +33,51 @@
   font-size: 1rem;
 }
 
+.wallet-status {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: rgba(138, 99, 210, 0.05);
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-indicator.connecting {
+  background: #ff9500;
+  animation: pulse 1.5s infinite;
+}
+
+.status-indicator.connected {
+  background: #34c759;
+}
+
+.status-indicator.disconnected {
+  background: #ff3b30;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
 .search-box {
   display: flex;
   gap: 1rem;
