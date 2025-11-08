@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { sdk } from '@farcaster/miniapp-sdk';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import { Alchemy, Network } from 'alchemy-sdk';
 import './AirdropChecker.css';
 
 interface AirdropData {
@@ -24,9 +22,6 @@ function AirdropChecker() {
   const [error, setError] = useState('');
   const [airdropData, setAirdropData] = useState<AirdropData | null>(null);
   const [lastSearchTime, setLastSearchTime] = useState(0);
-  const { address: connectedAddress, isConnected } = useAccount();
-  const { connect, connectors } = useConnect();
-  const { disconnect } = useDisconnect();
 
   const handleSearch = async () => {
     if (!searchInput.trim()) {
@@ -46,33 +41,15 @@ function AirdropChecker() {
     setAirdropData(null);
     setLastSearchTime(now);
 
-    // If connected to wallet and search input is empty, use connected address
-    const searchValue = searchInput.trim() || (isConnected && connectedAddress ? connectedAddress : '');
-    
-    if (!searchValue) {
-      setError('Please enter a Farcaster username or connect your wallet');
-      setIsLoading(false);
-      return;
-    }
-
-    const cleanInput = searchValue.toLowerCase().replace('@', '').trim();
+    const cleanInput = searchInput.toLowerCase().replace('@', '').trim();
     const isFID = /^\d+$/.test(cleanInput);
-    const isAddress = /^0x[a-fA-F0-9]{40}$/.test(cleanInput);
 
     try {
       // Fetch user data from Neynar to check spam label
       const apiKey = import.meta.env.VITE_NEYNAR_API_KEY || 'NEYNAR_API_DOCS';
-      let apiUrl = '';
-      
-      if (isFID) {
-        apiUrl = `https://api.neynar.com/v2/farcaster/user/bulk?fids=${cleanInput}`;
-      } else if (isAddress) {
-        // For wallet addresses, we'll need to find the FID first
-        // This is a simplified approach - in practice you might need to search differently
-        apiUrl = `https://api.neynar.com/v2/farcaster/user/by_verified_address?address=${cleanInput}`;
-      } else {
-        apiUrl = `https://api.neynar.com/v2/farcaster/user/by_username?username=${cleanInput}`;
-      }
+      const apiUrl = isFID 
+        ? `https://api.neynar.com/v2/farcaster/user/bulk?fids=${cleanInput}`
+        : `https://api.neynar.com/v2/farcaster/user/by_username?username=${cleanInput}`;
 
       const response = await fetch(apiUrl, {
         headers: {
@@ -94,9 +71,7 @@ function AirdropChecker() {
       
       if (isFID && data.users && data.users.length > 0) {
         user = data.users[0];
-      } else if (isAddress && data.users && data.users.length > 0) {
-        user = data.users[0];
-      } else if (!isFID && !isAddress && data.user) {
+      } else if (!isFID && data.user) {
         user = data.user;
       }
 
@@ -113,34 +88,6 @@ function AirdropChecker() {
       const verifiedAddress = user.verified_addresses?.eth_addresses?.[0] || 
                              user.custody_address || 
                              '0x' + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
-
-      // Fetch additional data from Alchemy
-      let alchemyData = null;
-      try {
-        const alchemyApiKey = import.meta.env.VITE_ALCHEMY_API_KEY;
-        if (alchemyApiKey && verifiedAddress) {
-          const settings = {
-            apiKey: alchemyApiKey,
-            network: Network.BASE_MAINNET,
-          };
-          const alchemy = new Alchemy(settings);
-          
-          // Get transaction history
-          const transactions = await alchemy.core.getTransactionCount(verifiedAddress);
-          
-          // Get token balances
-          const tokens = await alchemy.core.getTokenBalances(verifiedAddress);
-          
-          alchemyData = {
-            transactionCount: transactions,
-            tokenBalances: tokens
-          };
-          
-          console.log('Alchemy data:', alchemyData);
-        }
-      } catch (alchemyError) {
-        console.error('Error fetching Alchemy data:', alchemyError);
-      }
 
       // Enhanced spam detection using multiple indicators
       let isSpam = false;
@@ -248,41 +195,6 @@ function AirdropChecker() {
         <div className="checker-header">
           <h2>🎁 Airdrop Analytics</h2>
           <p>Check Base & Farcaster airdrop eligibility</p>
-        </div>
-
-        {/* Wallet Connection */}
-        <div className="wallet-section">
-          {!isConnected ? (
-            <div className="wallet-connect">
-              <p>Connect your wallet to check eligibility</p>
-              <div className="connector-buttons">
-                {connectors.map((connector) => (
-                  <motion.button
-                    key={connector.id}
-                    className="wallet-btn"
-                    onClick={() => connect({ connector })}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    disabled={!connector.ready}
-                  >
-                    Connect {connector.name}
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="wallet-connected">
-              <p>Connected: {connectedAddress?.slice(0, 6)}...{connectedAddress?.slice(-4)}</p>
-              <motion.button
-                className="disconnect-btn"
-                onClick={() => disconnect()}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Disconnect
-              </motion.button>
-            </div>
-          )}
         </div>
 
         <div className="search-box">
