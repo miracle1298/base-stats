@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# base-stats
+>>>>>>> 97e559146e228f02167d6a99eb792b53b2f74e92
+# Castbase - Base & Farcaster Airdrop Analytics
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Farcaster Mini App for checking Base and Farcaster airdrop eligibility.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🎁 Check airdrop eligibility for Base and Farcaster
+- 🔍 Search by Farcaster username or FID
+- 🚨 Neynar spam label detection
+- 🚀 Share results on Farcaster
+- 📊 Real-time analytics
+- ✅ Deterministic results (consistent per user)
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React + TypeScript + Vite
+- Farcaster Mini Apps SDK
+- Neynar API v2
+- Framer Motion
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Install dependencies:
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. Create `.env` file:
 ```
+VITE_NEYNAR_API_KEY=your_api_key_here
+```
+
+3. Run development server:
+```bash
+npm run dev
+```
+
+## Deployment
+
+1. Update URLs in `/.well-known/farcaster.json` and `index.html`
+2. Generate account association at https://farcaster.xyz/~/developers/mini-apps/manifest
+3. Add required images (icon.png, og-image.png)
+4. Deploy to your domain
+
+## Mini App Configuration
+
+Manifest file located at: `public/.well-known/farcaster.json`
+
+Category: Finance  
+Tags: airdrop, base, farcaster, analytics, crypto
+=======
+# base-stats
+>>>>>>> 97e559146e228f02167d6a99eb792b53b2f74e92
