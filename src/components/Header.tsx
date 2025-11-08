@@ -1,17 +1,7 @@
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
 import './Header.css';
 
 const Header = () => {
-  const [updateTime, setUpdateTime] = useState(new Date());
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setUpdateTime(new Date());
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
   return (
     <motion.header 
       className="header"
@@ -42,14 +32,6 @@ const Header = () => {
         </div>
         
         <div className="status-badges">
-          <motion.div 
-            className="status-badge live"
-            animate={{ opacity: [1, 0.6, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <span className="pulse-dot"></span>
-            Live • Updated {updateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-          </motion.div>
           <div className="status-badge">
             🔵 Base Network
           </div>
