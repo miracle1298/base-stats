@@ -36,8 +36,8 @@ const Header = () => {
             🎯
           </motion.div>
           <div>
-            <h1 className="logo-text">Airdrop Checker</h1>
-            <p className="tagline">Check Base & Farcaster airdrop eligibility with spam detection</p>
+            <h1 className="logo-text">Consistent Interactors</h1>
+            <p className="tagline">Identify and reward your most consistent Farcaster interactors</p>
           </div>
         </div>
         

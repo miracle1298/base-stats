@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { sdk } from '@farcaster/miniapp-sdk';
 import './App.css';
 import Header from './components/Header';
-import AirdropChecker from './components/AirdropChecker';
+import ConsistentInteractors from './components/ConsistentInteractors';
 
 function App() {
   const [context, setContext] = useState<any>(null);
@@ -47,7 +47,7 @@ function App() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <AirdropChecker />
+        <ConsistentInteractors />
       </motion.div>
     </div>
   );
