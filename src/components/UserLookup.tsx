@@ -29,7 +29,7 @@ const UserLookup = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const refreshIntervalRef = useRef<number | null>(null);
+  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const currentFidRef = useRef<string | null>(null);
 
   // Auto-refresh follower/following counts every 10 seconds
@@ -500,9 +500,34 @@ const UserLookup = () => {
               <div className="user-header-card">
                 <div className="user-avatar-large">
                   {userData.avatar.startsWith('http') ? (
-                    <img src={userData.avatar} alt={userData.username} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                    <img 
+                      src={userData.avatar} 
+                      alt={userData.username} 
+                      style={{ 
+                        width: '100%', 
+                        height: '100%', 
+                        borderRadius: '50%', 
+                        objectFit: 'cover',
+                        objectPosition: 'center'
+                      }} 
+                      onError={(e) => {
+                        // Fallback to default emoji if image fails to load
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.parentElement!.innerHTML = '👤';
+                      }}
+                    />
                   ) : (
-                    userData.avatar
+                    <span style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      width: '100%',
+                      height: '100%',
+                      fontSize: '3rem'
+                    }}>
+                      {userData.avatar}
+                    </span>
                   )}
                 </div>
                 <div className="user-main-info">

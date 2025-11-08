@@ -41,7 +41,30 @@ const TopList = ({ title, emoji, items }: TopListProps) => {
             </div>
             
             <div className="item-info">
-              {item.avatar && <span className="item-avatar">{item.avatar}</span>}
+              {item.avatar && (
+                item.avatar.startsWith('http') ? (
+                  <img 
+                    src={item.avatar} 
+                    alt={item.name} 
+                    className="item-avatar"
+                    style={{ 
+                      width: '24px', 
+                      height: '24px', 
+                      borderRadius: '50%', 
+                      objectFit: 'cover',
+                      objectPosition: 'center'
+                    }}
+                    onError={(e) => {
+                      // Fallback to default emoji if image fails to load
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.parentElement!.innerHTML = '👤';
+                    }}
+                  />
+                ) : (
+                  <span className="item-avatar">{item.avatar}</span>
+                )
+              )}
               <div className="item-details">
                 <span className="item-name">{item.name}</span>
                 <span className="item-value">{item.value}</span>

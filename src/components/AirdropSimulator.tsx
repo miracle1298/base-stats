@@ -177,7 +177,28 @@ const AirdropSimulator = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                           >
-                            <span className="user-avatar">{user.avatar}</span>
+                            {user.avatar.startsWith('http') ? (
+                              <img 
+                                src={user.avatar} 
+                                alt={user.name} 
+                                className="user-avatar"
+                                style={{ 
+                                  width: '32px', 
+                                  height: '32px', 
+                                  borderRadius: '50%', 
+                                  objectFit: 'cover',
+                                  objectPosition: 'center'
+                                }}
+                                onError={(e) => {
+                                  // Fallback to default emoji if image fails to load
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  target.parentElement!.innerHTML = '👤';
+                                }}
+                              />
+                            ) : (
+                              <span className="user-avatar">{user.avatar}</span>
+                            )}
                             <div className="user-info">
                               <span className="user-name">{user.name}</span>
                               <span className="user-engagement">{user.engagement}</span>
