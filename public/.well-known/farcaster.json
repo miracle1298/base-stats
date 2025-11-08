@@ -10,7 +10,7 @@
     "description": "Check your eligibility for Base and Farcaster airdrops. Get real-time analytics and share your results with the community.",
     "primaryCategory": "finance",
     "tags": ["airdrop", "base", "farcaster", "analytics", "crypto"],
-    "imageUrl": "https://base-stats-three.vercel.app/og-image.png",
-    "buttonTitle": "Check Airdrops"
+    "heroImageUrl": "https://base-stats-three.vercel.app/og-image.png",
+    "ogImageUrl": "https://base-stats-three.vercel.app/og-image.png"
   }
 }
