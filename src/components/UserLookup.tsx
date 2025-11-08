@@ -16,6 +16,7 @@ interface UserData {
   rank: number;
   spamScore: number;
   qualityScore: number;
+  neynarScore?: number;
   joinDate: string;
   recentActivity: {
     casts: number;
@@ -96,6 +97,7 @@ const UserLookup = () => {
       rank: 1,
       spamScore: 0.1,
       qualityScore: 99.9,
+      neynarScore: 95.5, // Add Neynar score
       joinDate: '2023-08-15',
       recentActivity: { casts: 234, likes: 5670, recasts: 1230 }
     },
@@ -112,6 +114,7 @@ const UserLookup = () => {
       rank: 2,
       spamScore: 0.2,
       qualityScore: 99.8,
+      neynarScore: 92.3, // Add Neynar score
       joinDate: '2023-07-01',
       recentActivity: { casts: 189, likes: 4320, recasts: 980 }
     },
@@ -128,6 +131,7 @@ const UserLookup = () => {
       rank: 3,
       spamScore: 0.3,
       qualityScore: 99.7,
+      neynarScore: 89.7, // Add Neynar score
       joinDate: '2023-07-15',
       recentActivity: { casts: 156, likes: 3890, recasts: 890 }
     },
@@ -144,6 +148,7 @@ const UserLookup = () => {
       rank: 4,
       spamScore: 0.2,
       qualityScore: 99.8,
+      neynarScore: 87.2, // Add Neynar score
       joinDate: '2023-08-01',
       recentActivity: { casts: 98, likes: 2890, recasts: 670 }
     },
@@ -160,6 +165,7 @@ const UserLookup = () => {
       rank: 5,
       spamScore: 0.1,
       qualityScore: 99.9,
+      neynarScore: 85.6, // Add Neynar score
       joinDate: '2023-07-20',
       recentActivity: { casts: 84, likes: 2340, recasts: 560 }
     }
@@ -325,6 +331,7 @@ const UserLookup = () => {
           rank: 0,
           spamScore: 0,
           qualityScore: 100,
+          neynarScore: user.neynar_score || user.score || 0, // Add Neynar score
           joinDate: joinDate, // From Farcaster Client API verifications
           recentActivity: { 
             casts: Math.min(castData.totalCasts, 25), 
@@ -391,6 +398,7 @@ const UserLookup = () => {
           rank: Math.floor(100 + seedForData),
           spamScore: +((seedForData % 5) * 0.3).toFixed(1),
           qualityScore: +(99.5 - (seedForData % 5) * 0.3).toFixed(1),
+          neynarScore: +(80 + (seedForData % 20)).toFixed(1), // Add Neynar score
           joinDate: new Date(2023, 6, 1 + (seedForData % 365)).toISOString().split('T')[0],
           recentActivity: { 
             casts: Math.floor(10 + (seedForData / 10)), 
@@ -690,6 +698,23 @@ const UserLookup = () => {
                       />
                     </div>
                   </div>
+                  {userData.neynarScore !== undefined && userData.neynarScore > 0 && (
+                    <div className="quality-item">
+                      <div className="quality-header">
+                        <span>Neynar Score</span>
+                        <span className="quality-percent" style={{ color: '#8A63D2' }}>{userData.neynarScore}</span>
+                      </div>
+                      <div className="progress-bar">
+                        <motion.div 
+                          className="progress-fill"
+                          style={{ background: 'linear-gradient(135deg, #8A63D2 0%, #0052FF 100%)' }}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${userData.neynarScore}%` }}
+                          transition={{ duration: 1, delay: 0.6 }}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
