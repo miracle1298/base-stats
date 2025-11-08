@@ -1,4 +1,9 @@
 {
+  "accountAssociation": {
+    "header": "eyJmaWQiOjIzMjc5OCwidHlwZSI6ImF1dGgiLCJrZXkiOiIweGRkNmJFYUVGYTg1NjQ4NWY5RkRkNGM5NjljYjEyNmI1RjUyNWZEMTEifQ",
+    "payload": "eyJkb21haW4iOiJiYXNlLXN0YXRzLXRocmVlLnZlcmNlbC5hcHAifQ",
+    "signature": "Jpy1hoEPycRA523Wu7BhwpBDvUJXIfJ0E+OydecfjYU6HcmLwOtqSLkREzcYJ8ei5yh0/wf/KknPgfFKMaCPxxs="
+  },
   "miniapp": {
     "version": "1",
     "name": "Airdrop Checker",
