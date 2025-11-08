@@ -255,15 +255,115 @@
 }
 
 @media (max-width: 768px) {
+  .airdrop-checker {
+    padding: 1rem 0.75rem;
+  }
+
+  .checker-card {
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
+  }
+
+  .checker-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .checker-header p {
+    font-size: 0.9rem;
+  }
+
   .search-box {
     flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .search-input {
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .search-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .user-info {
+    padding: 1.25rem 1rem;
+  }
+
+  .user-info h3 {
+    font-size: 1.25rem;
+  }
+
+  .spam-badge {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .total-airdrop {
+    padding: 1.5rem 1rem;
   }
 
   .total-amount {
-    font-size: 2.5rem;
+    font-size: 2rem;
+  }
+
+  .airdrop-card {
+    padding: 1.25rem 1rem;
+  }
+
+  .logo {
+    font-size: 2rem;
+  }
+
+  .card-header h4 {
+    font-size: 1.1rem;
   }
 
   .amount-value {
+    font-size: 1.5rem;
+  }
+
+  .share-btn {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .airdrop-checker {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .checker-card {
+    padding: 1.25rem 0.875rem;
+  }
+
+  .checker-header h2 {
+    font-size: 1.35rem;
+  }
+
+  .total-amount {
     font-size: 1.75rem;
+  }
+
+  .user-info h3 {
+    font-size: 1.1rem;
+  }
+
+  .card-header {
+    gap: 0.75rem;
+  }
+
+  .logo {
+    font-size: 1.75rem;
+  }
+
+  .card-header h4 {
+    font-size: 1rem;
+  }
+
+  .amount-value {
+    font-size: 1.35rem;
   }
 }
