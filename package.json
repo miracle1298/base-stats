@@ -1,5 +1,5 @@
 {
-  "name": "base-mock-airdrop",
+  "name": "airdrop-checker",
   "private": true,
   "version": "0.0.0",
   "type": "module",

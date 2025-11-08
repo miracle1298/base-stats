@@ -1,7 +1,7 @@
 {
   "miniapp": {
     "version": "1",
-    "name": "Base Mock Airdrop",
+    "name": "Airdrop Checker",
     "iconUrl": "https://base-stats-three.vercel.app/icon.png",
     "homeUrl": "https://base-stats-three.vercel.app",
     "splashImageUrl": "https://base-stats-three.vercel.app/splash.png",
