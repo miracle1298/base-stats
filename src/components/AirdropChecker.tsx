@@ -83,14 +83,39 @@ function AirdropChecker() {
         throw new Error('User not found');
       }
 
+      // Log user data to check available fields
+      console.log('User data from Neynar:', user);
+      console.log('Active status:', user.active_status);
+      console.log('Power badge:', user.power_badge);
+
       // Get verified addresses
       const verifiedAddress = user.verified_addresses?.eth_addresses?.[0] || 
                              user.custody_address || 
                              '0x' + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
-      // Check active_status for spam detection
-      const isSpam = user.active_status === 'inactive' || false;
-      const spamLabel = user.active_status === 'inactive' ? 'Inactive Account' : undefined;
+      // Enhanced spam detection using multiple indicators
+      let isSpam = false;
+      let spamLabel = undefined;
+
+      // Check 1: Active status
+      if (user.active_status === 'inactive') {
+        isSpam = true;
+        spamLabel = 'Inactive Account';
+      }
+      
+      // Check 2: Very low followers (potential spam)
+      if (user.follower_count < 5 && user.following_count > 100) {
+        isSpam = true;
+        spamLabel = 'Suspicious Activity';
+      }
+
+      // Check 3: No power badge and very low followers
+      if (!user.power_badge && user.follower_count < 2) {
+        isSpam = true;
+        spamLabel = 'Low Activity';
+      }
+
+      console.log('Spam detection result:', { isSpam, spamLabel });
 
       // Generate consistent amounts based on FID (deterministic, not random)
       const seed = parseInt(user.fid.toString());
@@ -213,16 +238,20 @@ function AirdropChecker() {
           >
             {/* User Info */}
             <div className="user-info">
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                 <h3>{airdropData.username}</h3>
                 {airdropData.isSpam && (
                   <span className="spam-badge">
-                    ⚠️ {airdropData.spamLabel || 'Spam'}
+                    ⚠️ {airdropData.spamLabel || 'SPAM'}
                   </span>
                 )}
               </div>
               <p className="fid">FID: {airdropData.fid}</p>
               <p className="address">{airdropData.address.slice(0, 6)}...{airdropData.address.slice(-4)}</p>
+              {/* Debug info - remove in production */}
+              <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                Spam: {airdropData.isSpam ? 'Yes' : 'No'} | Label: {airdropData.spamLabel || 'None'}
+              </p>
             </div>
 
             {/* Total Airdrop */}

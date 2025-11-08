@@ -6,11 +6,11 @@
   },
   "frame": {
     "version": "1",
-    "name": "Castbase",
+    "name": "Base Mock Airdrop",
     "iconUrl": "https://castbase.app/icon.png",
     "homeUrl": "https://castbase.app",
     "imageUrl": "https://castbase.app/og-image.png",
-    "buttonTitle": "Open Castbase",
+    "buttonTitle": "Check Airdrops",
     "splashImageUrl": "https://castbase.app/icon.png",
     "splashBackgroundColor": "#0A0B14"
   }

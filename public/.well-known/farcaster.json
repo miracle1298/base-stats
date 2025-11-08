@@ -6,7 +6,7 @@
   },
   "miniapp": {
     "version": "1",
-    "name": "Castbase",
+    "name": "Base Mock Airdrop",
     "iconUrl": "https://castbase.app/icon.png",
     "homeUrl": "https://castbase.app",
     "splashImageUrl": "https://castbase.app/icon.png",

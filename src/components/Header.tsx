@@ -36,8 +36,8 @@ const Header = () => {
             🎯
           </motion.div>
           <div>
-            <h1 className="logo-text">Castbase</h1>
-            <p className="tagline">Track the pulse of Farcaster — who's casting, who's spamming, and who deserves the next airdrop.</p>
+            <h1 className="logo-text">Base Mock Airdrop</h1>
+            <p className="tagline">Check Base & Farcaster airdrop eligibility with spam detection</p>
           </div>
         </div>
         
