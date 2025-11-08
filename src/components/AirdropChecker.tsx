@@ -246,10 +246,6 @@ function AirdropChecker() {
               </div>
               <p className="fid">FID: {airdropData.fid}</p>
               <p className="address">{airdropData.address.slice(0, 6)}...{airdropData.address.slice(-4)}</p>
-              {/* Debug info - remove in production */}
-              <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                Spam: {airdropData.isSpam ? 'Yes' : 'No'} | Label: {airdropData.spamLabel || 'None'}
-              </p>
             </div>
 
             {/* Total Airdrop */}
