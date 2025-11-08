@@ -7,11 +7,11 @@
   "frame": {
     "version": "1",
     "name": "Base Mock Airdrop",
-    "iconUrl": "https://castbase.app/icon.png",
-    "homeUrl": "https://castbase.app",
-    "imageUrl": "https://castbase.app/og-image.png",
+    "iconUrl": "https://base-stats-three.vercel.app/icon.png",
+    "homeUrl": "https://base-stats-three.vercel.app",
+    "imageUrl": "https://base-stats-three.vercel.app/og-image.png",
     "buttonTitle": "Check Airdrops",
-    "splashImageUrl": "https://castbase.app/icon.png",
+    "splashImageUrl": "https://base-stats-three.vercel.app/icon.png",
     "splashBackgroundColor": "#0A0B14"
   }
 }

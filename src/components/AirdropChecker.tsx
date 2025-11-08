@@ -172,7 +172,7 @@ function AirdropChecker() {
       shareText += `🟣 Farcaster: Not Eligible\n`;
     }
     
-    shareText += `\nCheck yours at castbase.app!`;
+    shareText += `\nCheck yours at base-stats-three.vercel.app!`;
 
     const encodedText = encodeURIComponent(shareText);
     const warpcastShareUrl = `https://warpcast.com/~/compose?text=${encodedText}`;
