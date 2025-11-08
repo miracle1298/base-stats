@@ -6,7 +6,7 @@
     "homeUrl": "https://base-stats-three.vercel.app",
     "splashImageUrl": "https://base-stats-three.vercel.app/splash.png",
     "splashBackgroundColor": "#0A0B14",
-    "subtitle": "Base & Farcaster Airdrops",
+    "subtitle": "Airdrop Checker",
     "description": "Check your eligibility for Base and Farcaster airdrops. Get real-time analytics and share your results with the community.",
     "primaryCategory": "finance",
     "tags": ["airdrop", "base", "farcaster", "analytics", "crypto"],
