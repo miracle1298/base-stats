@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate App Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0A0B14;
+            color: white;
+        }
+        canvas {
+            border: 2px solid #0052FF;
+            margin: 20px 0;
+            display: block;
+        }
+        button {
+            background: linear-gradient(135deg, #0052FF 0%, #8A63D2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        h1 {
+            background: linear-gradient(135deg, #0052FF 0%, #8A63D2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .instructions {
+            background: rgba(0, 82, 255, 0.1);
+            border: 1px solid #0052FF;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Base Mock Airdrop - Image Generator</h1>
+    
+    <div class="instructions">
+        <strong>Instructions:</strong>
+        <ol>
+            <li>Click the download buttons below</li>
+            <li>Save the files as <code>icon.png</code> and <code>og-image.png</code></li>
+            <li>Place them in the <code>castbase/public/</code> folder</li>
+        </ol>
+    </div>
+
+    <h2>App Icon (1024x1024px)</h2>
+    <canvas id="iconCanvas" width="1024" height="1024"></canvas>
+    <button onclick="downloadIcon()">📥 Download icon.png</button>
+
+    <h2>OG Image (1200x630px)</h2>
+    <canvas id="ogCanvas" width="1200" height="630"></canvas>
+    <button onclick="downloadOG()">📥 Download og-image.png</button>
+
+    <script>
+        // Generate Icon
+        const iconCanvas = document.getElementById('iconCanvas');
+        const iconCtx = iconCanvas.getContext('2d');
+
+        // Gradient background
+        const iconGradient = iconCtx.createLinearGradient(0, 0, 1024, 1024);
+        iconGradient.addColorStop(0, '#0052FF');
+        iconGradient.addColorStop(1, '#8A63D2');
+        iconCtx.fillStyle = iconGradient;
+        iconCtx.fillRect(0, 0, 1024, 1024);
+
+        // Add emoji
+        iconCtx.font = 'bold 400px Arial';
+        iconCtx.textAlign = 'center';
+        iconCtx.textBaseline = 'middle';
+        iconCtx.fillText('🎁', 512, 512);
+
+        // Add text
+        iconCtx.fillStyle = 'white';
+        iconCtx.font = 'bold 80px Arial';
+        iconCtx.fillText('BASE', 512, 800);
+        iconCtx.font = 'bold 60px Arial';
+        iconCtx.fillText('MOCK AIRDROP', 512, 880);
+
+        // Generate OG Image
+        const ogCanvas = document.getElementById('ogCanvas');
+        const ogCtx = ogCanvas.getContext('2d');
+
+        // Gradient background
+        const ogGradient = ogCtx.createLinearGradient(0, 0, 1200, 630);
+        ogGradient.addColorStop(0, '#0A0B14');
+        ogGradient.addColorStop(0.5, '#0052FF');
+        ogGradient.addColorStop(1, '#8A63D2');
+        ogCtx.fillStyle = ogGradient;
+        ogCtx.fillRect(0, 0, 1200, 630);
+
+        // Add decorative circles
+        ogCtx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        ogCtx.beginPath();
+        ogCtx.arc(1000, 100, 200, 0, Math.PI * 2);
+        ogCtx.fill();
+        ogCtx.beginPath();
+        ogCtx.arc(200, 500, 150, 0, Math.PI * 2);
+        ogCtx.fill();
+
+        // Add text
+        ogCtx.fillStyle = 'white';
+        ogCtx.font = 'bold 100px Arial';
+        ogCtx.textAlign = 'center';
+        ogCtx.fillText('🎁 Base Mock Airdrop', 600, 250);
+        
+        ogCtx.font = 'bold 50px Arial';
+        ogCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ogCtx.fillText('Check Base & Farcaster', 600, 350);
+        ogCtx.fillText('Airdrop Eligibility', 600, 420);
+
+        ogCtx.font = 'bold 35px Arial';
+        ogCtx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ogCtx.fillText('base-stats-three.vercel.app', 600, 520);
+
+        // Download functions
+        function downloadIcon() {
+            const link = document.createElement('a');
+            link.download = 'icon.png';
+            link.href = iconCanvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadOG() {
+            const link = document.createElement('a');
+            link.download = 'og-image.png';
+            link.href = ogCanvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>
